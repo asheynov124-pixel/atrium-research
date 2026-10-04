@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Atrium — Paragraph audit</title>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,480;6..72,560&family=Outfit:wght@340;480;560&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:#f6f3ec; --ink:#1b1814; --muted:#5a5148; --line:#e4d9cc;
+    --panel:#fffdf9; --copper:#8c2f2c; --ok:#1c6b44; --warn:#8a5a12; --bad:#8c2f2c;
+    --mark:#f3d48a; --chip:#f3eadc;
+  }
+  body.dark {
+    --bg:#0e0e0c; --ink:#f3efe6; --muted:#9c9488; --line:rgba(243,239,230,.14);
+    --panel:#171714; --copper:#c9845a; --ok:#8fbfa3; --warn:#e0b15a; --bad:#e08b82;
+    --mark:#8a6230; --chip:#221e1a;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:Outfit,sans-serif; font-weight:340; font-size:16px; line-height:1.5; }
+  header { position:sticky; top:0; z-index:3; display:flex; gap:14px; align-items:center; padding:14px 18px; background:color-mix(in srgb, var(--bg) 90%, transparent); border-bottom:1px solid var(--line); backdrop-filter:blur(10px); }
+  .logo { font-family:Newsreader,serif; font-size:22px; }
+  .logo span { color:var(--copper); }
+  nav { margin-left:auto; display:flex; gap:14px; align-items:center; }
+  nav a, button.quiet { color:var(--muted); text-decoration:none; font:inherit; font-size:13px; background:none; border:0; cursor:pointer; padding:0; }
+  nav a.on { color:var(--ink); }
+  main { max-width:920px; margin:0 auto; padding:28px 18px 80px; }
+  .kicker { color:var(--copper); font-size:12px; letter-spacing:.12em; text-transform:uppercase; font-weight:560; }
+  h1 { font-family:Newsreader,serif; font-weight:480; font-size:34px; letter-spacing:-.03em; margin:8px 0 10px; line-height:1.15; }
+  .lede { color:var(--muted); max-width:66ch; margin:0 0 22px; }
+  .bar { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+  button.chip, button.go, button.copy {
+    border:1px solid var(--line); background:var(--chip); color:var(--ink);
+    border-radius:999px; padding:8px 12px; font:inherit; font-size:14px; cursor:pointer;
+  }
+  button.chip.on { border-color:var(--copper); color:var(--copper); }
+  button.go { background:var(--copper); color:#fffdf9; border-color:var(--copper); font-weight:480; }
+  body.dark button.go { color:#1a120c; }
+  textarea {
+    width:100%; min-height:148px; resize:vertical; border:1px solid var(--line);
+    background:var(--panel); color:var(--ink); border-radius:14px; padding:14px 16px;
+    font:inherit; font-size:16px; line-height:1.5; outline:none;
+  }
+  textarea:focus { border-color:var(--copper); }
+  .actions { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; align-items:center; }
+  .tally { display:flex; gap:8px; flex-wrap:wrap; margin:22px 0 8px; }
+  .pill { border-radius:999px; padding:6px 10px; font-size:13px; border:1px solid var(--line); }
+  .pill.ok { color:var(--ok); } .pill.warn { color:var(--warn); } .pill.bad { color:var(--bad); }
+  article.finding {
+    margin-top:14px; background:var(--panel); border:1px solid var(--line); border-radius:16px;
+    padding:16px 16px 14px; border-left:4px solid var(--line);
+  }
+  article.finding.ok { border-left-color:var(--ok); }
+  article.finding.warn { border-left-color:var(--warn); }
+  article.finding.bad { border-left-color:var(--bad); }
+  .sig { font-size:12px; letter-spacing:.08em; text-transform:uppercase; font-weight:560; }
+  .ok .sig, .sig.ok { color:var(--ok); }
+  .warn .sig, .sig.warn { color:var(--warn); }
+  .bad .sig, .sig.bad { color:var(--bad); }
+  h2 { font-family:Newsreader,serif; font-weight:480; font-size:22px; margin:4px 0 2px; }
+  .cite { color:var(--muted); font-size:14px; margin:0 0 10px; }
+  q { font-family:Newsreader,serif; font-size:18px; line-height:1.45; display:block; }
+  mark { background:var(--mark); color:#1b1814; padding:0 .12em; border-radius:2px; }
+  .why { margin:10px 0 0; }
+  .excerpt { color:var(--muted); font-size:14px; margin:8px 0 0; }
+  .empty { color:var(--muted); margin-top:18px; }
+  .toast { color:var(--ok); font-size:13px; min-height:18px; }
+  @media (max-width:640px) {
+    h1 { font-size:28px; }
+    q { font-size:17px; }
+    header { flex-wrap:wrap; }
+    nav { margin-left:0; width:100%; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Atrium <span>Audit</span></div>
+  <nav>
+    <a href="index.html">Session</a>
+    <a href="slip.html">Slip</a>
+    <a class="on" href="audit.html">Paragraph audit</a>
+    <button class="quiet" id="theme" type="button">Dark</button>
+  </nav>
+</header>
+<main>
+  <div class="kicker">New · check the draft against the pin</div>
+  <h1>Paragraph audit</h1>
+  <p class="lede">Paste a paragraph from the brief. Atrium walks every case it already has in this session, pins the sentence to the public passage, and flags a wrong motion, an overruled case used as law, or a line the passage does not support. A name it does not have stays blank. Nothing is added from outside the session.</p>
+  <div class="bar" id="court">
+    <button class="chip on" type="button" data-court="federal">Federal court</button>
+    <button class="chip" type="button" data-court="nj">New Jersey</button>
+  </div>
+  <div class="bar" id="samples"></div>
+  <textarea id="draft" aria-label="Draft paragraph">Under Celotex, a summary-judgment movant must disprove the plaintiff’s claim. Twombly requires the same showing on a Rule 56 motion. Chevron deference confirms the agency’s reading of the statute.</textarea>
+  <div class="actions">
+    <button class="go" id="run" type="button">Audit paragraph</button>
+    <button class="chip" id="copy" type="button">Copy verification memo</button>
+    <span class="toast" id="toast"></span>
+  </div>
+  <div id="out"></div>
+</main>
+<script>
+const CASES = [
+  { id:"celotex", name:"Celotex Corp. v. Catrett", cite:"477 U.S. 317", year:"1986", pin:"325",
+    aliases:[/celotex/i], motion:"summary judgment", signal:"Followed", tone:"ok",
+    quote:"The burden on the moving party may be discharged by showing — that is, pointing out to the district court — that there is an absence of evidence to support the nonmoving party's case.",
+    use:"The movant who does not bear the trial burden may point to a missing element.",
+    dont:"Do not write that the movant must disprove or negate the claim." },
+  { id:"anderson", name:"Anderson v. Liberty Lobby, Inc.", cite:"477 U.S. 242", year:"1986", pin:"252",
+    aliases:[/anderson/i, /liberty lobby/i, /scintilla/i], motion:"summary judgment", signal:"Followed", tone:"ok",
+    quote:"The mere existence of a scintilla of evidence in support of the plaintiff's position will be insufficient; there must be evidence on which the jury could reasonably find for the plaintiff.",
+    use:"A scintilla is not a genuine dispute.",
+    dont:"Do not write that any evidence defeats summary judgment." },
+  { id:"scott", name:"Scott v. Harris", cite:"550 U.S. 372", year:"2007", pin:"380",
+    aliases:[/scott v\.?\s*harris/i, /dashcam/i], motion:"summary judgment", signal:"Followed", tone:"ok",
+    quote:"When opposing parties tell two different stories, one of which is blatantly contradicted by the record, so that no reasonable jury could believe it, a court should not adopt that version of the facts for purposes of ruling on a motion for summary judgment.",
+    use:"Use only where the record blatantly contradicts the nonmovant.",
+    dont:"Do not cite Scott for the opening burden." },
+  { id:"brill", name:"Brill v. Guardian Life Ins. Co. of America", cite:"142 N.J. 520", year:"1995", pin:"540",
+    aliases:[/brill/i], motion:"summary judgment", signal:"Controls in New Jersey", tone:"ok",
+    quote:"The judge must consider whether the competent evidential materials presented, when viewed in the light most favorable to the non-moving party, are sufficient to permit a rational factfinder to resolve the alleged disputed issue in favor of the non-moving party.",
+    use:"In a New Jersey court, this is the summary-judgment standard.",
+    dont:"Do not cite Celotex as the New Jersey case." },
+  { id:"iqbal", name:"Ashcroft v. Iqbal", cite:"556 U.S. 662", year:"2009", pin:"678",
+    aliases:[/iqbal/i], motion:"motion to dismiss", signal:"Followed", tone:"ok",
+    quote:"To survive a motion to dismiss, a complaint must contain sufficient factual matter, accepted as true, to state a claim to relief that is plausible on its face.",
+    use:"Pleading standard. Conclusory allegations are set aside first.",
+    dont:"Do not cite Iqbal for a summary-judgment burden." },
+  { id:"twombly", name:"Bell Atlantic Corp. v. Twombly", cite:"550 U.S. 544", year:"2007", pin:"570",
+    aliases:[/twombly/i], motion:"motion to dismiss", signal:"Followed", tone:"ok",
+    quote:"We do not require heightened fact pleading of specifics, but only enough facts to state a claim to relief that is plausible on its face.",
+    use:"Enough facts to state a plausible claim.",
+    dont:"Do not cite Twombly for Rule 56." },
+  { id:"shoe", name:"International Shoe Co. v. Washington", cite:"326 U.S. 310", year:"1945", pin:"316",
+    aliases:[/international shoe/i], motion:"personal jurisdiction", signal:"Foundation", tone:"ok",
+    quote:"Due process requires only that in order to subject a defendant to a judgment in personam, if he be not present within the territory of the forum, he have certain minimum contacts with it such that the maintenance of the suit does not offend traditional notions of fair play and substantial justice.",
+    use:"The defendant must have minimum contacts with the forum.",
+    dont:"Do not treat the plaintiff's residence as the defendant's contact." },
+  { id:"ford", name:"Ford Motor Co. v. Montana Eighth Judicial District Court", cite:"141 S. Ct. 1017", year:"2021", pin:"1026",
+    aliases:[/ford motor/i, /\bford\b/i], motion:"specific jurisdiction", signal:"Followed", tone:"ok",
+    quote:"The plaintiff's claims must arise out of or relate to the defendant's contacts with the forum.",
+    use:"Relatedness, not a strict causal chain from the particular unit, if the defendant serves that market and the injury is there.",
+    dont:"Do not cite Ford for a nonresident who was not injured in the forum." },
+  { id:"bms", name:"Bristol-Myers Squibb Co. v. Superior Court", cite:"137 S. Ct. 1773", year:"2017", pin:"1781",
+    aliases:[/bristol[-\s]?myers/i], motion:"specific jurisdiction", signal:"Limited", tone:"warn",
+    quote:"What is needed — and what is missing here — is a connection between the forum and the specific claims at issue.",
+    use:"Nonresident plaintiffs cannot borrow another plaintiff's forum injury.",
+    dont:"Do not use to defeat a resident plaintiff's claim arising from the defendant's forum market." },
+  { id:"loper", name:"Loper Bright Enterprises v. Raimondo", cite:"144 S. Ct. 2244", year:"2024", pin:"2244",
+    aliases:[/loper/i], motion:"agency deference", signal:"Controls", tone:"ok",
+    quote:"Chevron is overruled. Courts must exercise independent judgment in deciding whether an agency has acted within its statutory authority.",
+    use:"Current rule. Cite this, not Chevron, for the court's role.",
+    dont:"Do not pair with a Chevron citation offered as controlling." },
+  { id:"chevron", name:"Chevron U.S.A. Inc. v. Natural Resources Defense Council", cite:"467 U.S. 837", year:"1984", pin:"843",
+    aliases:[/chevron/i], motion:"agency deference", signal:"Overruled", tone:"bad",
+    quote:"If the statute is silent or ambiguous with respect to the specific issue, the question for the court is whether the agency's answer is based on a permissible construction of the statute.",
+    use:"Mention only as overruled.",
+    dont:"Do not cite Chevron as good law." }
+];
+const SAMPLES = [
+  { label:"Bad Rule 56 draft", court:"federal", text:"Under Celotex, a summary-judgment movant must disprove the plaintiff’s claim. Twombly requires the same showing on a Rule 56 motion. Chevron deference confirms the agency’s reading of the statute." },
+  { label:"Supported Rule 56", court:"federal", text:"The movant may point to an absence of evidence on an essential element. Celotex, 477 U.S. at 325. A scintilla in response is not enough; there must be evidence on which a jury could find for the plaintiff. Anderson, 477 U.S. at 252." },
+  { label:"New Jersey standard", court:"nj", text:"Summary judgment is proper under Celotex where the defendant has negated the claim. The New Jersey court applies that federal case as the standard." },
+  { label:"Forum contacts", court:"federal", text:"Ford holds that a nonresident plaintiff injured outside the forum may sue wherever the defendant sells the product. Bristol-Myers is not to the contrary." }
+];
+let court = "federal";
+let lastMemo = "";
+function motionOf(text) {
+  const s = text.toLowerCase();
+  if (/rule 56|summary judgment/.test(s)) return "summary judgment";
+  if (/12\(b\)\(6\)|motion to dismiss|plausib/.test(s)) return "motion to dismiss";
+  if (/jurisdiction|forum|nonresident/.test(s)) return "specific jurisdiction";
+  if (/deference|agency|chevron|loper/.test(s)) return "agency deference";
+  return "";
+}
+function sentenceAround(text, index) {
+  const start = Math.max(0, text.lastIndexOf(".", index - 1), text.lastIndexOf("\n", index - 1));
+  const from = start <= 0 ? 0 : start + 1;
+  let end = text.length;
+  for (const mark of [".", "\n"]) {
+    const i = text.indexOf(mark, index);
+    if (i !== -1 && i < end) end = i + (mark === "." ? 1 : 0);
+  }
+  return text.slice(from, end).trim();
+}
+function audit(text) {
+  const findings = [];
+  const motion = motionOf(text);
+  const lower = text.toLowerCase();
+  const negate = /must (disprove|negate)|negated the claim|disprove the plaintiff/.test(lower);
+  const scintillaOk = /scintilla (is|would be) enough|any evidence defeats/.test(lower);
+  const nonresidentOut = /nonresident/.test(lower) && /outside the forum|injured elsewhere|not injured in the forum|injured outside/.test(lower);
+  const chevronAsLaw = /chevron deference|chevron is good|under chevron|deference confirms|permissible construction/.test(lower) && !/overrul/.test(lower);
+  CASES.forEach(c => {
+    const hit = c.aliases.some(re => re.test(text));
+    if (!hit) return;
+    if (c.id === "ford" && /ford,?\s*477|liberty lobby/i.test(text) && !/ford motor|141 S/i.test(text)) return;
+    const flags = [];
+    if (c.id === "chevron" && chevronAsLaw) flags.push({ tone:"bad", label:"Overruled, used as law", note:"Chevron is overruled. The passage in this session is the old rule. Cite Loper Bright, 144 S. Ct. 2244." });
+    if (c.id === "chevron" && !chevronAsLaw) flags.push({ tone:"warn", label:"Overruled", note:"Mention only to say Loper Bright overruled it." });
+    if ((c.id === "twombly" || c.id === "iqbal") && motion === "summary judgment") flags.push({ tone:"bad", label:"Wrong motion", note:c.name.split(" v. ")[0] + " is a pleading case. It is not the Rule 56 burden." });
+    if (c.id === "celotex" && motion === "motion to dismiss") flags.push({ tone:"bad", label:"Wrong motion", note:"Celotex is the summary-judgment burden, not the plausibility standard." });
+    if (c.id === "celotex" && negate) flags.push({ tone:"bad", label:"Not supported", note:"Celotex at 323 says there is no requirement that the movant negate the claim." });
+    if (c.id === "anderson" && scintillaOk) flags.push({ tone:"bad", label:"Contradicted", note:"Anderson at 252 says a scintilla is not enough." });
+    if (c.id === "ford" && nonresidentOut) flags.push({ tone:"bad", label:"Outside the pin", note:"Ford does not cover a nonresident who was not injured in the forum. See Bristol-Myers at 1781." });
+    if (c.id === "bms" && nonresidentOut && /not to the contrary|consistent with ford/i.test(lower)) flags.push({ tone:"warn", label:"Does not rescue Ford", note:"Bristol-Myers is the limit, not a way around it. A nonresident injured outside the forum still needs a connection between the forum and that claim." });
+    if (c.id === "celotex" && court === "nj" && !/brill/i.test(text)) flags.push({ tone:"warn", label:"Wrong court", note:"In a New Jersey court, cite Brill, 142 N.J. at 540. Do not cite Celotex as the New Jersey case." });
+    if (c.id === "brill" && court === "federal") flags.push({ tone:"warn", label:"State case", note:"Brill is the New Jersey standard. It is not the federal Rule 56 case." });
+    if (!flags.length) flags.push({ tone:"ok", label:"Pinned", note:c.use });
+    const worst = flags.some(f => f.tone === "bad") ? "bad" : flags.some(f => f.tone === "warn") ? "warn" : "ok";
+    findings.push({ c, flags, worst, excerpt: sentenceAround(text, text.search(c.aliases.find(re => re.test(text)))) });
+  });
+  const named = text.match(/\b[A-Z][a-z]+ v\. [A-Z][a-z]+/g) || [];
+  named.forEach(raw => {
+    const known = CASES.some(c => c.aliases.some(re => re.test(raw)) || c.name.toLowerCase().includes(raw.toLowerCase().split(" v. ")[0]));
+    if (!known) findings.push({ unknown: raw, worst:"warn", flags:[{ tone:"warn", label:"Not in this session", note:"Atrium will not supply a pin, a quote, or a treatment for a case that is not in this session." }] });
+  });
+  return { findings, motion };
+}
+function memo(result, text) {
+  const lines = ["ATRIUM PARAGRAPH AUDIT", "Court: " + (court === "nj" ? "New Jersey" : "Federal"), "Motion read: " + (result.motion || "not stated"), "", "Draft:", text.trim(), ""];
+  if (!result.findings.length) lines.push("No case from this session was recognized. No cite was added.");
+  result.findings.forEach(f => {
+    if (f.unknown) {
+      lines.push(f.unknown + " — not in this session. No pin added.");
+      return;
+    }
+    lines.push(f.c.name + ", " + f.c.cite + ", " + f.c.pin + " (" + f.c.year + ").");
+    lines.push("Signal: " + f.c.signal + ".");
+    lines.push("\"" + f.c.quote + "\"");
+    f.flags.forEach(flag => lines.push(flag.label + ": " + flag.note));
+    lines.push("Do not write: " + f.c.dont);
+    lines.push("");
+  });
+  lines.push("Source: public opinion text already in this Atrium session. Not a citator.");
+  return lines.join("\n");
+}
+function render(result, text) {
+  const el = document.getElementById("out");
+  if (!result.findings.length) {
+    lastMemo = memo(result, text);
+    el.innerHTML = `<p class="empty">No case from this session was recognized. Atrium did not add a cite.</p>`;
+    return;
+  }
+  const counts = { ok:0, warn:0, bad:0 };
+  result.findings.forEach(f => counts[f.worst]++);
+  lastMemo = memo(result, text);
+  el.innerHTML = `<div class="tally">
+      <span class="pill ok">${counts.ok} pinned</span>
+      <span class="pill warn">${counts.warn} caution</span>
+      <span class="pill bad">${counts.bad} not supported</span>
+    </div>` + result.findings.map(f => {
+      if (f.unknown) return `<article class="finding warn"><div class="sig warn">Not in this session</div><h2>${f.unknown}</h2><p class="why">${f.flags[0].note}</p></article>`;
+      return `<article class="finding ${f.worst}"><div class="sig">${f.flags.map(x => x.label).join(" · ")}</div><h2>${f.c.name}</h2><p class="cite">${f.c.cite}, ${f.c.pin} (${f.c.year}) · ${f.c.signal}</p><q><mark>${f.c.quote}</mark></q><p class="why">${f.flags.map(x => x.note).join(" ")}</p><p class="excerpt">In the draft: ${f.excerpt}</p></article>`;
+    }).join("");
+}
+function run() {
+  const text = document.getElementById("draft").value;
+  document.getElementById("toast").textContent = "";
+  render(audit(text), text);
+}
+document.getElementById("samples").innerHTML = SAMPLES.map((s, i) => `<button class="chip" type="button" data-i="${i}">${s.label}</button>`).join("");
+document.getElementById("samples").onclick = e => {
+  const b = e.target.closest("button"); if (!b) return;
+  const s = SAMPLES[+b.dataset.i];
+  document.getElementById("draft").value = s.text;
+  court = s.court;
+  document.querySelectorAll("#court button").forEach(x => x.classList.toggle("on", x.dataset.court === court));
+  run();
+};
+document.getElementById("court").onclick = e => {
+  const b = e.target.closest("button"); if (!b) return;
+  court = b.dataset.court;
+  document.querySelectorAll("#court button").forEach(x => x.classList.toggle("on", x === b));
+  run();
+};
+document.getElementById("run").onclick = run;
+document.getElementById("copy").onclick = async () => {
+  if (!lastMemo) run();
+  try {
+    await navigator.clipboard.writeText(lastMemo);
+    document.getElementById("toast").textContent = "Memo copied.";
+  } catch (e) {
+    document.getElementById("toast").textContent = "Clipboard blocked.";
+  }
+};
+document.getElementById("theme").onclick = () => {
+  document.body.classList.toggle("dark");
+  document.getElementById("theme").textContent = document.body.classList.contains("dark") ? "Light" : "Dark";
+};
+run();
+</script>
+</body>
+</html>
