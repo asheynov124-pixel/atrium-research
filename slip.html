@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Atrium — Verification Slip</title>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,480;6..72,560&family=Outfit:wght@340;480;560&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg:#0e0e0c; --panel:#171714; --ink:#f3efe6; --muted:#9c9488; --line:rgba(243,239,230,.12); --copper:#c9845a; --ok:#8fbfa3; --warn:#e0b15a; --bad:#e08b82; }
+  * { box-sizing:border-box; } body { margin:0; background:var(--bg); color:var(--ink); font-family:Outfit,sans-serif; font-weight:340; }
+  header { position:sticky; top:0; z-index:3; display:flex; gap:16px; align-items:center; padding:14px 20px; background:rgba(14,14,12,.92); border-bottom:1px solid var(--line); backdrop-filter:blur(10px); }
+  .logo { font-family:Newsreader,serif; font-size:22px; } .logo span { color:var(--copper); }
+  nav a { color:var(--muted); text-decoration:none; font-size:13px; margin-left:14px; } nav a.on { color:var(--ink); }
+  .layout { display:grid; grid-template-columns:1fr 380px; min-height:calc(100vh - 58px); }
+  main { padding:28px 32px 80px; } aside { border-left:1px solid var(--line); padding:22px; background:#121210; }
+  h1 { font-family:Newsreader,serif; font-weight:480; font-size:32px; letter-spacing:-.03em; margin:6px 0 8px; }
+  .kicker { color:var(--copper); font-size:12px; letter-spacing:.12em; text-transform:uppercase; }
+  .rule { color:var(--muted); max-width:62ch; line-height:1.5; }
+  .card { margin-top:16px; padding:16px 0; border-top:1px solid var(--line); display:grid; grid-template-columns:96px 1fr auto; gap:12px; align-items:start; }
+  .sig { font-size:12px; letter-spacing:.06em; text-transform:uppercase; } .ok{color:var(--ok)} .warn{color:var(--warn)} .bad{color:var(--bad)}
+  q { font-family:Newsreader,serif; font-size:17px; line-height:1.45; display:block; margin-top:8px; }
+  .why { color:var(--muted); margin:8px 0 0; font-size:14px; }
+  button.slip { background:transparent; color:var(--copper); border:1px solid var(--copper); border-radius:999px; padding:8px 12px; font:inherit; font-size:12px; letter-spacing:.06em; text-transform:uppercase; cursor:pointer; }
+  button.slip:hover, button.slip.on { background:var(--copper); color:#1a120c; }
+  .sheet { border:1px solid var(--line); border-radius:14px; padding:16px; background:var(--panel); }
+  .sheet h2 { font-family:Newsreader,serif; font-weight:480; font-size:20px; margin:0 0 4px; }
+  .meta { color:var(--muted); font-size:12px; letter-spacing:.08em; text-transform:uppercase; }
+  pre { white-space:pre-wrap; font-family:Newsreader,serif; font-size:15px; line-height:1.5; margin:12px 0; }
+  .row { display:flex; gap:8px; margin-top:12px; }
+  button.copy, button.clear { flex:1; border-radius:999px; padding:10px; font:inherit; cursor:pointer; }
+  button.copy { background:var(--copper); color:#1a120c; border:0; }
+  button.clear { background:transparent; color:var(--ink); border:1px solid var(--line); }
+  .toast { color:var(--ok); font-size:13px; min-height:18px; margin-top:8px; }
+  .empty { color:var(--muted); font-size:14px; line-height:1.5; }
+  @media (max-width:860px) { .layout{grid-template-columns:1fr} aside{border-left:0; border-top:1px solid var(--line)} }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Atrium <span>Slip</span></div>
+  <nav><a href="index.html">Session</a><a class="on" href="slip.html">Verification slip</a></nav>
+</header>
+<div class="layout">
+  <main>
+    <div class="kicker">New · bridge to the brief</div>
+    <h1>Verification slip</h1>
+    <p class="rule">Atrium already pins a sentence to a public passage. The missing step is the handoff: one card becomes a Bluebook-ready slip with the treatment signal, the pin, the quote, and the line you must not cross. Nothing is invented outside the session.</p>
+    <div id="cards"></div>
+  </main>
+  <aside>
+    <div class="sheet" id="sheet">
+      <div class="meta">Slip</div>
+      <h2>Nothing pinned</h2>
+      <p class="empty">Choose an authority. The slip stays empty until a paragraph in this session supports it.</p>
+    </div>
+  </aside>
+</div>
+<script>
+const issues = [
+  { id:"sj", label:"Summary judgment", title:"What the movant must show under Rule 56",
+    auths:[
+      { s:"Followed", c:"ok", name:"Celotex Corp. v. Catrett", cite:"477 U.S. 317, 322 (1986)", pin:"322",
+        q:"Rule 56(c) mandates the entry of summary judgment, after adequate time for discovery and upon motion, against a party who fails to make a showing sufficient to establish the existence of an element essential to that party's case, and on which that party will bear the burden of proof at trial.",
+        why:"Opening burden. Do not write that the defendant must disprove the claim.",
+        dont:"Do not use if the sentence says the movant must negate the nonmovant's claim." },
+      { s:"Followed", c:"ok", name:"Anderson v. Liberty Lobby, Inc.", cite:"477 U.S. 242, 252 (1986)", pin:"252",
+        q:"The mere existence of a scintilla of evidence in support of the plaintiff's position will be insufficient; there must be evidence on which the jury could reasonably find for the plaintiff.",
+        why:"Response standard. Mirrors the directed-verdict test.",
+        dont:"Do not use if the record has only a conclusory affidavit and no evidence a jury could credit." }
+    ]},
+  { id:"12b", label:"Motion to dismiss", title:"What a complaint must contain",
+    auths:[
+      { s:"Followed", c:"ok", name:"Ashcroft v. Iqbal", cite:"556 U.S. 662, 678 (2009)", pin:"678",
+        q:"To survive a motion to dismiss, a complaint must contain sufficient factual matter, accepted as true, to state a claim to relief that is plausible on its face.",
+        why:"Conclusory allegations are set aside before the plausibility reading.",
+        dont:"Do not use Iqbal to decide a summary-judgment record." },
+      { s:"Followed", c:"ok", name:"Bell Atlantic Corp. v. Twombly", cite:"550 U.S. 544, 570 (2007)", pin:"570",
+        q:"We do not require heightened fact pleading of specifics, but only enough facts to state a claim to relief that is plausible on its face.",
+        why:"Iqbal applied this beyond antitrust.",
+        dont:"Do not cite Twombly for a Rule 56 burden." }
+    ]},
+  { id:"pj", label:"Specific jurisdiction", title:"When the forum may hear the claim",
+    auths:[
+      { s:"Followed", c:"ok", name:"Ford Motor Co. v. Montana Eighth Judicial District Court", cite:"141 S. Ct. 1017, 1026 (2021)", pin:"1026",
+        q:"The plaintiff's claims must arise out of or relate to the defendant's contacts with the forum.",
+        why:"A strict causal chain from the particular unit is not required if the defendant serves that market and the injury is there.",
+        dont:"Do not cite Ford for a nonresident who was not injured in the forum." },
+      { s:"Limited", c:"warn", name:"Bristol-Myers Squibb Co. v. Superior Court", cite:"137 S. Ct. 1773, 1781 (2017)", pin:"1781",
+        q:"What is needed—and what is missing here—is a connection between the forum and the specific claims at issue.",
+        why:"Nonresident plaintiffs cannot borrow another plaintiff's forum injury.",
+        dont:"Do not use to defeat a resident plaintiff's claim arising from the defendant's forum market." }
+    ]},
+  { id:"ch", label:"Agency deference", title:"Chevron is not good law",
+    auths:[
+      { s:"Overruled", c:"bad", name:"Chevron U.S.A. Inc. v. NRDC", cite:"467 U.S. 837 (1984)", pin:"843",
+        q:"If the statute is silent or ambiguous with respect to the specific issue, the question for the court is whether the agency's answer is based on a permissible construction of the statute.",
+        why:"This sentence is the old rule. Do not cite it as controlling.",
+        dont:"Do not use as good law. Cite only to say it was overruled." },
+      { s:"Controls", c:"ok", name:"Loper Bright Enterprises v. Raimondo", cite:"144 S. Ct. 2244 (2024)", pin:"2273",
+        q:"Chevron is overruled. Courts must exercise independent judgment in deciding whether an agency has acted within its statutory authority.",
+        why:"Current rule. Overruling-risk case for anything that rested on Chevron.",
+        dont:"Do not pair with a Chevron citation offered as controlling." }
+    ]}
+];
+let current = null;
+function slipText(issue, a){
+  return [
+    issue.label.toUpperCase(),
+    a.name + ", " + a.cite + ".",
+    "Signal: " + a.s + ".",
+    "Pin: " + a.pin + ".",
+    "\"" + a.q + "\"",
+    "Use: " + a.why,
+    "Do not use if: " + a.dont,
+    "Source: public opinion text in this Atrium session. Not a citator."
+  ].join("\n");
+}
+function render(){
+  document.getElementById("cards").innerHTML = issues.map((issue, ii) =>
+    `<div class="kicker" style="margin-top:28px">${issue.label}</div><div class="rule">${issue.title}</div>` +
+    issue.auths.map((a, ai) => `<article class="card"><div class="sig ${a.c}">${a.s}</div><div><strong>${a.name}</strong><div class="why">${a.cite}</div><q>${a.q}</q><p class="why">${a.why}</p></div><button class="slip" data-ii="${ii}" data-ai="${ai}">Slip</button></article>`).join("")
+  ).join("");
+}
+function show(issue, a, btn){
+  document.querySelectorAll("button.slip").forEach(b => b.classList.remove("on"));
+  if (btn) btn.classList.add("on");
+  current = slipText(issue, a);
+  document.getElementById("sheet").innerHTML =
+    `<div class="meta">${a.s} · pin ${a.pin}</div><h2>${a.name}</h2><pre id="body"></pre><div class="row"><button class="copy" id="copy">Copy slip</button><button class="clear" id="clear">Clear</button></div><div class="toast" id="toast"></div>`;
+  document.getElementById("body").textContent = current;
+  document.getElementById("copy").onclick = async () => {
+    try { await navigator.clipboard.writeText(current); document.getElementById("toast").textContent = "Copied. Paste into the brief."; }
+    catch (e) { document.getElementById("toast").textContent = "Clipboard blocked — select the slip and copy."; }
+  };
+  document.getElementById("clear").onclick = () => {
+    current = null;
+    document.getElementById("sheet").innerHTML = `<div class="meta">Slip</div><h2>Nothing pinned</h2><p class="empty">Choose an authority. The slip stays empty until a paragraph in this session supports it.</p>`;
+    document.querySelectorAll("button.slip").forEach(b => b.classList.remove("on"));
+  };
+}
+document.getElementById("cards").onclick = e => {
+  const b = e.target.closest("button.slip"); if (!b) return;
+  const issue = issues[+b.dataset.ii]; const a = issue.auths[+b.dataset.ai];
+  show(issue, a, b);
+};
+render();
+</script>
+</body>
+</html>
