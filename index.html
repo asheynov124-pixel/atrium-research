@@ -4,148 +4,84 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Atrium</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Public+Sans:wght@380;480;560&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,480;6..72,560&family=Outfit:wght@340;480;560&display=swap" rel="stylesheet" />
 <style>
-  :root {
-    --paper: #f4f1ea;
-    --ink: #1c1a17;
-    --muted: #6f675e;
-    --rule: #e2dcd0;
-    --accent: #8c3b24;
-    --caution: #8a5a12;
-    --neg: #8c2f2a;
-    --ok: #2f5d45;
-  }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; background: var(--paper); color: var(--ink); }
-  body { font-family: "Public Sans", sans-serif; font-weight: 380; }
-  .bar {
-    display: flex; justify-content: space-between; align-items: baseline;
-    padding: 22px 48px 18px; border-bottom: 1px solid var(--rule);
-  }
-  .word { font-family: Newsreader, serif; font-size: 22px; letter-spacing: -0.03em; }
-  .meta { color: var(--muted); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
-  .sheet { max-width: 820px; margin: 0 auto; padding: 56px 28px 96px; }
-  h1 {
-    font-family: Newsreader, serif; font-weight: 500; font-size: 40px;
-    letter-spacing: -0.03em; line-height: 1.15; margin: 0 0 12px;
-  }
-  .sub { color: var(--muted); font-size: 16px; line-height: 1.5; margin: 0 0 28px; max-width: 62ch; }
-  form {
-    display: flex; gap: 0; border-bottom: 1px solid var(--ink); margin-bottom: 8px;
-  }
-  input {
-    flex: 1; border: 0; background: transparent; font: inherit; font-size: 18px;
-    padding: 12px 0; outline: none; color: var(--ink);
-  }
-  button {
-    border: 0; background: transparent; font: inherit; font-size: 14px;
-    letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; color: var(--accent);
-  }
-  .hint { color: var(--muted); font-size: 13px; margin: 10px 0 36px; }
-  .hint button { text-transform: none; letter-spacing: 0; color: var(--ink); border-bottom: 1px solid var(--rule); padding: 0; margin-right: 14px; }
-  .ruleline { font-family: Newsreader, serif; font-size: 22px; line-height: 1.45; margin: 8px 0 28px; }
-  .auth { display: grid; grid-template-columns: 92px 1fr; gap: 18px; padding: 22px 0; border-top: 1px solid var(--rule); }
-  .treat { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; padding-top: 4px; }
-  .ok { color: var(--ok); } .caution { color: var(--caution); } .neg { color: var(--neg); }
-  .name { font-weight: 560; }
-  .cite { color: var(--muted); font-size: 14px; margin: 2px 0 10px; }
-  q { font-family: Newsreader, serif; font-size: 18px; line-height: 1.5; display: block; margin: 0 0 8px; }
-  .why { margin: 0; max-width: 68ch; line-height: 1.5; }
-  .empty { border-top: 1px solid var(--rule); padding-top: 22px; color: var(--muted); }
-  .foot { margin-top: 36px; color: var(--muted); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; }
+  :root { --bg:#0e0e0c; --panel:#171714; --ink:#f3efe6; --muted:#9c9488; --line:rgba(243,239,230,.12); --copper:#c9845a; --ok:#8fbfa3; --warn:#e0b15a; --bad:#e08b82; }
+  * { box-sizing:border-box; } body { margin:0; background:var(--bg); color:var(--ink); font-family:Outfit,sans-serif; font-weight:340; }
+  header { position:sticky; top:0; z-index:3; display:flex; gap:16px; align-items:center; padding:14px 20px; background:rgba(14,14,12,.92); border-bottom:1px solid var(--line); backdrop-filter:blur(10px); }
+  .logo { font-family:Newsreader,serif; font-size:22px; } form { flex:1; display:flex; } input { width:100%; background:#11110f; color:var(--ink); border:1px solid var(--line); border-radius:999px; padding:12px 16px; font:inherit; font-size:15px; outline:none; } input:focus { border-color:var(--copper); }
+  .layout { display:grid; grid-template-columns:240px 1fr 300px; min-height:calc(100vh - 62px); }
+  aside, .side { border-right:1px solid var(--line); padding:18px; } .side { border-right:0; border-left:1px solid var(--line); }
+  h2 { font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); font-weight:560; margin:18px 0 8px; }
+  button.issue, button.link { display:block; width:100%; text-align:left; background:transparent; color:var(--ink); border:0; border-bottom:1px solid var(--line); padding:10px 0; font:inherit; cursor:pointer; }
+  main { padding:28px 32px 64px; } .kicker { color:var(--copper); font-size:12px; letter-spacing:.12em; text-transform:uppercase; }
+  h1 { font-family:Newsreader,serif; font-weight:480; font-size:34px; letter-spacing:-.03em; margin:8px 0 12px; }
+  .rule { font-size:18px; line-height:1.45; max-width:62ch; }
+  .card { margin-top:18px; padding:16px 0; border-top:1px solid var(--line); display:grid; grid-template-columns:88px 1fr; gap:12px; }
+  .sig { font-size:12px; letter-spacing:.06em; text-transform:uppercase; } .ok{color:var(--ok)} .warn{color:var(--warn)} .bad{color:var(--bad)}
+  q { font-family:Newsreader,serif; font-size:18px; line-height:1.45; display:block; }
+  .why { color:var(--muted); margin:8px 0 0; }
+  .map { display:flex; gap:8px; flex-wrap:wrap; } .map span { border:1px solid var(--line); border-radius:999px; padding:6px 10px; font-size:12px; color:var(--muted); }
+  .note { color:var(--muted); font-size:13px; line-height:1.45; }
+  @media (max-width:900px) { .layout{grid-template-columns:1fr} aside,.side{border:0} header{flex-wrap:wrap} .logo{width:100%} }
 </style>
 </head>
 <body>
-<div class="bar">
-  <div class="word">Atrium</div>
-  <div class="meta">Federal · public opinions · desktop</div>
-</div>
-<div class="sheet">
-  <h1>Ask a question the cases can answer.</h1>
-  <p class="sub">This session holds eight Supreme Court opinions. It will not invent a holding. If the question is outside them, it says so.</p>
-  <form id="f">
-    <input id="q" placeholder="What must a plaintiff show to survive summary judgment?" autocomplete="off" />
-    <button type="submit">Research</button>
-  </form>
-  <div class="hint" id="hints"></div>
-  <div id="out"></div>
+<header>
+  <div class="logo">Atrium</div>
+  <form id="f"><input id="q" placeholder="Search the session — summary judgment, dismissal, jurisdiction, Chevron" /></form>
+</header>
+<div class="layout">
+  <aside>
+    <h2>Issue index</h2>
+    <div id="issues"></div>
+    <h2>This session</h2>
+    <div id="trail" class="note">Nothing opened yet.</div>
+  </aside>
+  <main id="main"></main>
+  <aside class="side" id="side"></aside>
 </div>
 <script>
-const corpus = [
-  {
-    id: "sj",
-    keys: ["summary judgment", "rule 56", "celotex", "anderson", "scintilla", "burden"],
-    title: "What a plaintiff must show to survive summary judgment",
-    rule: "After adequate discovery, summary judgment is required if the party who bears the burden of proof cannot produce evidence on an essential element. A mere scintilla is not enough.",
-    authorities: [
-      { t: "Controls", c: "ok", name: "Celotex Corp. v. Catrett", cite: "477 U.S. 317, 322 (1986)", q: "Rule 56(c) mandates the entry of summary judgment, after adequate time for discovery and upon motion, against a party who fails to make a showing sufficient to establish the existence of an element essential to that party's case, and on which that party will bear the burden of proof at trial.", why: "The moving defendant does not have to disprove the claim. Pointing to the absence of evidence on an element the plaintiff must prove is enough to shift the burden." },
-      { t: "Controls", c: "ok", name: "Anderson v. Liberty Lobby, Inc.", cite: "477 U.S. 242, 252 (1986)", q: "The mere existence of a scintilla of evidence in support of the plaintiff's position will be insufficient; there must be evidence on which the jury could reasonably find for the plaintiff.", why: "The question is the same as at trial: could a reasonable jury find for the nonmovant on the standard that applies to that claim." }
-    ]
-  },
-  {
-    id: "12b6",
-    keys: ["motion to dismiss", "12(b)(6)", "plausib", "twombly", "iqbal", "complaint"],
-    title: "What a complaint must plead to survive a motion to dismiss",
-    rule: "A complaint must plead factual matter that, taken as true, states a claim plausible on its face. A conceivable claim is not enough.",
-    authorities: [
-      { t: "Controls", c: "ok", name: "Ashcroft v. Iqbal", cite: "556 U.S. 662, 678 (2009)", q: "To survive a motion to dismiss, a complaint must contain sufficient factual matter, accepted as true, to state a claim to relief that is plausible on its face.", why: "Threadbare recitals of elements and conclusory statements are set aside. The remaining facts must permit a reasonable inference of liability." },
-      { t: "Controls", c: "ok", name: "Bell Atlantic Corp. v. Twombly", cite: "550 U.S. 544, 570 (2007)", q: "We do not require heightened fact pleading of specifics, but only enough facts to state a claim to relief that is plausible on its face.", why: "Iqbal took this antitrust pleading rule and applied it to civil complaints generally." }
-    ]
-  },
-  {
-    id: "pj",
-    keys: ["personal jurisdiction", "specific jurisdiction", "minimum contacts", "ford", "bristol", "international shoe", "purposeful avail"],
-    title: "When a state may hear a claim against an out-of-state defendant",
-    rule: "Specific jurisdiction requires minimum contacts the defendant purposefully made with the forum, and a suit that arises out of or relates to those contacts.",
-    authorities: [
-      { t: "Foundation", c: "ok", name: "International Shoe Co. v. Washington", cite: "326 U.S. 310, 316 (1945)", q: "Due process requires only that in order to subject a defendant to a judgment in personam, if he be not present within the territory of the forum, he have certain minimum contacts with it such that the maintenance of the suit does not offend traditional notions of fair play and substantial justice.", why: "This is the modern test. Presence in the forum is not required." },
-      { t: "Controls", c: "ok", name: "Ford Motor Co. v. Montana Eighth Judicial District Court", cite: "141 S. Ct. 1017, 1026 (2021)", q: "The plaintiff's claims must arise out of or relate to the defendant's contacts with the forum.", why: "Relatedness does not require that the particular product have been designed, made, or first sold in the forum, if the defendant systematically serves that market and the injury occurred there." },
-      { t: "Limit", c: "caution", name: "Bristol-Myers Squibb Co. v. Superior Court", cite: "137 S. Ct. 1773, 1781 (2017)", q: "What is needed—and what is missing here—is a connection between the forum and the specific claims at issue.", why: "Nonresidents who were not prescribed the drug in the forum, and were not injured there, cannot borrow the forum contacts of other plaintiffs." }
-    ]
-  },
-  {
-    id: "chevron",
-    keys: ["chevron", "deference", "agency", "loper", "raimondo"],
-    title: "Does Chevron deference still control",
-    rule: "No. The Court overruled Chevron. Courts interpret the statute themselves.",
-    authorities: [
-      { t: "Overruled", c: "neg", name: "Chevron U.S.A. Inc. v. Natural Resources Defense Council", cite: "467 U.S. 837 (1984)", q: "If the statute is silent or ambiguous with respect to the specific issue, the question for the court is whether the agency's answer is based on a permissible construction of the statute.", why: "This was the rule. It is no longer good law. Do not cite it as controlling." },
-      { t: "Controls", c: "ok", name: "Loper Bright Enterprises v. Raimondo", cite: "144 S. Ct. 2244 (2024)", q: "Chevron is overruled. Courts must exercise independent judgment in deciding whether an agency has acted within its statutory authority.", why: "The holding is the reason the older case carries a negative signal. Quote Loper Bright, not Chevron, for the current rule." }
-    ]
-  }
+const issues = [
+  { id:"sj", label:"Summary judgment", keys:["summary judgment","rule 56","celotex","anderson","burden of proof","scintilla"], title:"What the movant must show under Rule 56", rule:"The party who does not bear the trial burden can win by pointing to the absence of evidence on an essential element. A scintilla in response is not enough.", auths:[
+    { s:"Followed", c:"ok", name:"Celotex Corp. v. Catrett", cite:"477 U.S. 317, 322 (1986)", q:"Rule 56(c) mandates the entry of summary judgment, after adequate time for discovery and upon motion, against a party who fails to make a showing sufficient to establish the existence of an element essential to that party's case, and on which that party will bear the burden of proof at trial.", why:"Use this for the opening burden. Do not write that the defendant must disprove the claim." },
+    { s:"Followed", c:"ok", name:"Anderson v. Liberty Lobby, Inc.", cite:"477 U.S. 242, 252 (1986)", q:"The mere existence of a scintilla of evidence in support of the plaintiff's position will be insufficient; there must be evidence on which the jury could reasonably find for the plaintiff.", why:"Use this for the response. The standard mirrors the directed-verdict test." }
+  ], use:"Move first on the missing element. Answer only with evidence a jury could credit.", verify:"A sentence that says the movant must negate the claim is not supported." },
+  { id:"12b", label:"Motion to dismiss", keys:["motion to dismiss","12(b)(6)","plausib","twombly","iqbal","complaint"], title:"What a complaint must contain", rule:"Facts taken as true must state a claim plausible on its face. Conceivable is not the test.", auths:[
+    { s:"Followed", c:"ok", name:"Ashcroft v. Iqbal", cite:"556 U.S. 662, 678 (2009)", q:"To survive a motion to dismiss, a complaint must contain sufficient factual matter, accepted as true, to state a claim to relief that is plausible on its face.", why:"Conclusory allegations are set aside before the plausibility reading." },
+    { s:"Followed", c:"ok", name:"Bell Atlantic Corp. v. Twombly", cite:"550 U.S. 544, 570 (2007)", q:"We do not require heightened fact pleading of specifics, but only enough facts to state a claim to relief that is plausible on its face.", why:"Iqbal applied this beyond antitrust." }
+  ], use:"Identify the element, then the pleaded fact that makes liability plausible.", verify:"Do not cite Twombly for a summary-judgment burden." },
+  { id:"pj", label:"Specific jurisdiction", keys:["personal jurisdiction","specific jurisdiction","minimum contacts","ford","bristol","international shoe"], title:"When the forum may hear the claim", rule:"The defendant must have purposeful forum contacts, and the claim must arise out of or relate to them.", auths:[
+    { s:"Foundation", c:"ok", name:"International Shoe Co. v. Washington", cite:"326 U.S. 310, 316 (1945)", q:"Due process requires only that in order to subject a defendant to a judgment in personam, if he be not present within the territory of the forum, he have certain minimum contacts with it such that the maintenance of the suit does not offend traditional notions of fair play and substantial justice.", why:"Presence is not required." },
+    { s:"Followed", c:"ok", name:"Ford Motor Co. v. Montana Eighth Judicial District Court", cite:"141 S. Ct. 1017, 1026 (2021)", q:"The plaintiff's claims must arise out of or relate to the defendant's contacts with the forum.", why:"A strict causal chain from the particular unit is not required if the defendant serves that market and the injury is there." },
+    { s:"Limited", c:"warn", name:"Bristol-Myers Squibb Co. v. Superior Court", cite:"137 S. Ct. 1773, 1781 (2017)", q:"What is needed—and what is missing here—is a connection between the forum and the specific claims at issue.", why:"Nonresident plaintiffs cannot borrow another plaintiff's forum injury." }
+  ], use:"Separate the defendant's own contacts from the plaintiff's residence.", verify:"Do not cite Ford for a nonresident who was not injured in the forum." },
+  { id:"ch", label:"Agency deference", keys:["chevron","deference","agency","loper","raimondo"], title:"Chevron is not good law", rule:"Courts interpret the statute. Chevron deference has been overruled.", auths:[
+    { s:"Overruled", c:"bad", name:"Chevron U.S.A. Inc. v. NRDC", cite:"467 U.S. 837 (1984)", q:"If the statute is silent or ambiguous with respect to the specific issue, the question for the court is whether the agency's answer is based on a permissible construction of the statute.", why:"This sentence is the old rule. Do not cite it as controlling." },
+    { s:"Controls", c:"ok", name:"Loper Bright Enterprises v. Raimondo", cite:"144 S. Ct. 2244 (2024)", q:"Chevron is overruled. Courts must exercise independent judgment in deciding whether an agency has acted within its statutory authority.", why:"This is the overruling-risk case for anything that rested on Chevron." }
+  ], use:"Cite Loper Bright for the current rule. Mention Chevron only as overruled.", verify:"A cite to Chevron as good law fails the check." }
 ];
-const hints = [
-  "What must a plaintiff show to survive summary judgment?",
-  "What does a complaint need to survive a motion to dismiss?",
-  "When can a state hear a claim against an out-of-state company?",
-  "Is Chevron deference still good law?"
-];
-document.getElementById("hints").innerHTML = hints.map(h => `<button type="button" data-q="${h}">${h}</button>`).join("");
-document.getElementById("hints").onclick = (e) => {
-  if (e.target.dataset.q) { document.getElementById("q").value = e.target.dataset.q; run(); }
-};
-document.getElementById("f").onsubmit = (e) => { e.preventDefault(); run(); };
-function run() {
-  const q = document.getElementById("q").value.toLowerCase();
-  const hit = corpus.find(c => c.keys.some(k => q.includes(k))) || (q.includes("judgment") ? corpus[0] : null);
-  const out = document.getElementById("out");
+const trail = [];
+function renderIssues(){ document.getElementById("issues").innerHTML = issues.map(i=>`<button class="issue" data-id="${i.id}">${i.label}</button>`).join(""); }
+function show(issue){
+  trail.unshift(issue.label); document.getElementById("trail").textContent = trail.slice(0,4).join(" · ");
+  document.getElementById("main").innerHTML = `<div class="kicker">${issue.label}</div><h1>${issue.title}</h1><p class="rule">${issue.rule}</p>` +
+    issue.auths.map(a=>`<article class="card"><div class="sig ${a.c}">${a.s}</div><div><strong>${a.name}</strong><div class="note">${a.cite}</div><q>${a.q}</q><p class="why">${a.why}</p></div></article>`).join("");
+  document.getElementById("side").innerHTML = `<h2>How to use it</h2><p class="note">${issue.use}</p><h2>Verify</h2><p class="note">${issue.verify}</p><h2>Relationship</h2><div class="map">${issue.auths.map(a=>`<span>${a.name.split(" v. ")[0]}</span>`).join("")}</div><h2>Not in this session</h2><p class="note">No judge analytics, no news file, no docket. Those stay blank rather than invented.</p>`;
+}
+function run(q){
+  const s = q.toLowerCase();
+  const hit = issues.find(i => i.keys.some(k => s.includes(k)));
   if (!hit) {
-    out.innerHTML = `<div class="empty"><p>Not in this session. Atrium will not draft an answer from outside these opinions.</p><p>This desk can answer summary judgment, motions to dismiss, specific personal jurisdiction, and whether Chevron is still good law.</p></div>`;
+    document.getElementById("main").innerHTML = `<h1>Not in this session.</h1><p class="rule">Atrium will not answer from outside these opinions. Try summary judgment, a motion to dismiss, specific jurisdiction, or Chevron.</p>`;
+    document.getElementById("side").innerHTML = "";
     return;
   }
-  out.innerHTML = `<p class="ruleline">${hit.rule}</p>` + hit.authorities.map(a => `
-    <article class="auth">
-      <div class="treat ${a.c}">${a.t}</div>
-      <div>
-        <div class="name">${a.name}</div>
-        <div class="cite">${a.cite}</div>
-        <q>${a.q}</q>
-        <p class="why">${a.why}</p>
-      </div>
-    </article>`).join("") + `<div class="foot">Quoted from the public opinion · not a citator subscription</div>`;
+  show(hit);
 }
+document.getElementById("issues").onclick = e => { const id=e.target.dataset.id; if(id) show(issues.find(i=>i.id===id)); };
+document.getElementById("f").onsubmit = e => { e.preventDefault(); run(document.getElementById("q").value); };
+renderIssues(); show(issues[0]);
 </script>
 </body>
 </html>
