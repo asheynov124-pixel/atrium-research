@@ -3,34 +3,42 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Atrium — denser research</title>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,460;6..72,560&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<title>Atrium</title>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,460;6..72,560&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet" />
 <style>
-  :root { --paper:#f4f0e7; --ink:#1b1916; --mute:#6d665c; --line:#ddd4c6; --mark:#efe2cc; --rule:#7a342c; }
-  body.dark { --paper:#12110f; --ink:#f3eee6; --mute:#a89f93; --line:#2c2924; --mark:#3a2e22; --rule:#d7a27a; }
+  :root { --paper:#f7f4ee; --ink:#1a1612; --mute:#4e483f; --line:#e0d6c8; --mark:#f0d9a8; --rule:#6e2e28; }
+  body.dark { --paper:#161411; --ink:#f7f1e7; --mute:#c9bfb2; --line:#3a342c; --mark:#5a4630; --rule:#e2b48a; }
   * { box-sizing:border-box; }
-  body { margin:0; background:var(--paper); color:var(--ink); font-family:"Public Sans",sans-serif; }
-  header { display:flex; gap:12px; align-items:center; padding:14px 20px; border-bottom:1px solid var(--line); position:sticky; top:0; background:var(--paper); }
-  input { flex:1; border:0; border-bottom:1px solid var(--ink); background:transparent; color:var(--ink); font:inherit; font-size:16px; padding:8px 0; outline:none; }
-  button { border:1px solid var(--line); background:transparent; color:var(--ink); border-radius:999px; padding:7px 12px; font:inherit; font-size:13px; cursor:pointer; }
-  .sheet { display:grid; grid-template-columns:1fr 280px; gap:36px; max-width:1040px; margin:0 auto; padding:28px 22px 72px; }
-  .kicker { letter-spacing:.12em; text-transform:uppercase; font-size:11px; color:var(--rule); }
-  h1 { font-family:Newsreader,serif; font-weight:560; font-size:34px; letter-spacing:-.03em; margin:6px 0 4px; }
-  .cite { color:var(--mute); margin:0 0 18px; }
-  .op { font-family:Newsreader,serif; font-size:19px; line-height:1.6; }
-  mark { background:var(--mark); }
+  body { margin:0; background:var(--paper); color:var(--ink); font-family:"Source Sans 3",sans-serif; font-size:18px; line-height:1.55; }
+  header { display:flex; gap:16px; align-items:center; padding:16px 28px; border-bottom:1px solid var(--line); position:sticky; top:0; background:var(--paper); }
+  input { flex:1; border:0; border-bottom:1px solid var(--ink); background:transparent; color:var(--ink); font:inherit; padding:8px 0; outline:none; min-width:0; }
+  button { border:1px solid var(--line); background:transparent; color:var(--ink); border-radius:999px; padding:8px 14px; font:inherit; font-size:15px; cursor:pointer; }
+  .sheet { display:grid; grid-template-columns:minmax(0,68ch) 300px; gap:48px; justify-content:center; max-width:1120px; margin:0 auto; padding:40px 28px 80px; }
+  .kicker { letter-spacing:.14em; text-transform:uppercase; font-size:12px; color:var(--rule); font-weight:600; }
+  h1 { font-family:Newsreader,serif; font-weight:560; font-size:40px; letter-spacing:-.02em; line-height:1.15; margin:8px 0 6px; }
+  .cite { color:var(--mute); margin:0 0 28px; font-size:17px; }
+  .op { font-family:Newsreader,serif; font-size:22px; line-height:1.7; }
+  .op p { margin:0 0 1.15em; }
+  mark { background:var(--mark); color:inherit; padding:0 .08em; }
   .hidden { display:none; }
-  aside { border-left:1px solid var(--line); padding-left:18px; }
-  h2 { font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--mute); margin:18px 0 6px; }
-  .pin { margin:0 0 12px; font-size:14px; line-height:1.4; }
-  .pin b { display:block; }
-  @media (max-width:800px) { .sheet { grid-template-columns:1fr; } aside { border-left:0; border-top:1px solid var(--line); padding:16px 0 0; } }
+  aside { padding-top:8px; }
+  h2 { font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--mute); margin:0 0 8px; font-weight:600; }
+  .block { margin:0 0 28px; }
+  .pin { margin:0 0 14px; font-size:17px; line-height:1.5; color:var(--ink); }
+  .pin b { display:block; font-size:16px; margin-bottom:2px; }
+  @media (max-width:860px) {
+    body { font-size:17px; }
+    header { flex-wrap:wrap; }
+    .sheet { grid-template-columns:1fr; gap:28px; padding:28px 20px 64px; }
+    h1 { font-size:32px; }
+    .op { font-size:20px; }
+  }
 </style>
 </head>
 <body>
 <header>
   <strong>Atrium</strong>
-  <input value="What must a summary-judgment movant show?" />
+  <input value="What must a summary-judgment movant show?" aria-label="Search" />
   <button id="mode" type="button">Read</button>
   <button id="theme" type="button">Dark</button>
 </header>
@@ -39,7 +47,7 @@
     <div class="kicker">Found · followed</div>
     <h1>Celotex Corp. v. Catrett</h1>
     <p class="cite">477 U.S. 317, 322–23 (1986)</p>
-    <div class="op" id="op">
+    <div class="op">
       <p class="more hidden">Summary judgment is proper after adequate time for discovery when the record shows no genuine dispute on an essential element.</p>
       <p><mark>Rule 56(c) mandates the entry of summary judgment, after adequate time for discovery and upon motion, against a party who fails to make a showing sufficient to establish the existence of an element essential to that party's case, and on which that party will bear the burden of proof at trial.</mark></p>
       <p><mark>There is no express or implied requirement in Rule 56 that the moving party support its motion with affidavits or other similar materials negating the opponent's claim.</mark></p>
@@ -47,15 +55,23 @@
     </div>
   </article>
   <aside>
-    <h2>Holding</h2>
-    <p class="pin">The movant who does not bear the trial burden need not negate the claim. Pointing to a missing element is enough.</p>
-    <h2>Other pins</h2>
-    <p class="pin"><b>Anderson, 477 U.S. 242, 252</b>A scintilla is not enough. The response must be evidence a jury could accept.</p>
-    <p class="pin"><b>Scott, 550 U.S. 372, 380</b>When the record blatantly contradicts the nonmovant, the court does not adopt that version.</p>
-    <h2>Treatment</h2>
-    <p class="pin">Followed. Still the opening burden on a Rule 56 motion.</p>
-    <h2>Do not write</h2>
-    <p class="pin">Do not write that the defendant must disprove the plaintiff’s claim.</p>
+    <div class="block">
+      <h2>Holding</h2>
+      <p class="pin">The movant who does not bear the trial burden need not negate the claim. Pointing to a missing element is enough.</p>
+    </div>
+    <div class="block">
+      <h2>Other pins</h2>
+      <p class="pin"><b>Anderson, 477 U.S. 242, 252</b>A scintilla is not enough. The response must be evidence a jury could accept.</p>
+      <p class="pin"><b>Scott, 550 U.S. 372, 380</b>When the record blatantly contradicts the nonmovant, the court does not adopt that version.</p>
+    </div>
+    <div class="block">
+      <h2>Treatment</h2>
+      <p class="pin">Followed. Still the opening burden on a Rule 56 motion.</p>
+    </div>
+    <div class="block">
+      <h2>Do not write</h2>
+      <p class="pin">Do not write that the defendant must disprove the plaintiff’s claim.</p>
+    </div>
   </aside>
 </div>
 <script>
