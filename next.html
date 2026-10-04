@@ -11,7 +11,8 @@
   * { box-sizing:border-box; } body { margin:0; background:var(--paper); color:var(--ink); font-family:Outfit,sans-serif; }
   header { display:flex; gap:12px; align-items:center; padding:14px 18px; border-bottom:3px solid var(--rule); position:sticky; top:0; background:var(--paper); }
   .word { font-family:Fraunces,serif; color:var(--rule); font-size:22px; }
-  form { flex:1; display:flex; } input { flex:1; border:1px solid var(--line); background:var(--panel); color:var(--ink); border-radius:999px; padding:12px 14px; font:inherit; font-size:16px; outline:none; min-width:0; }
+  form { flex:1; display:flex; } input, textarea { border:1px solid var(--line); background:var(--panel); color:var(--ink); font:inherit; }
+  input { flex:1; border-radius:999px; padding:12px 14px; font-size:16px; outline:none; min-width:0; }
   button { border:1px solid var(--line); background:var(--panel); color:var(--ink); border-radius:999px; padding:8px 12px; font:inherit; cursor:pointer; }
   .sheet { display:grid; grid-template-columns:minmax(0,68ch) 300px; gap:28px; max-width:1080px; margin:0 auto; padding:28px 18px 72px; }
   article, .block { background:var(--panel); border:1px solid var(--line); border-radius:16px; }
@@ -21,8 +22,9 @@
   aside { display:flex; flex-direction:column; gap:12px; }
   .block { padding:14px 16px; border-left:4px solid var(--rule); } .ok { border-left-color:var(--ok); }
   h2 { font-size:12px; letter-spacing:.12em; text-transform:uppercase; margin:0 0 8px; color:var(--rule); }
-  .pin { display:block; width:100%; text-align:left; background:transparent; border:0; color:var(--ink); font:inherit; padding:8px 0; cursor:pointer; border-top:1px solid var(--line); }
-  .brief { font-size:16px; line-height:1.45; }
+  .pin, .trail button { display:block; width:100%; text-align:left; background:transparent; border:0; color:var(--ink); font:inherit; padding:8px 0; cursor:pointer; border-top:1px solid var(--line); }
+  textarea { width:100%; min-height:72px; border-radius:10px; padding:8px; }
+  #verdict { margin:8px 0 0; }
   @media (max-width:800px) { .sheet { grid-template-columns:1fr; } h1 { font-size:28px; } .op { font-size:19px; } }
 </style>
 </head>
@@ -35,28 +37,40 @@
 <div class="sheet" id="sheet"></div>
 <script>
 const cases = {
-  celotex: { name:"Celotex Corp. v. Catrett", cite:"477 U.S. 317, 323 (1986)", court:"Federal", k:"Found · followed", mark:"There is no express or implied requirement in Rule 56 that the moving party support its motion with affidavits or other similar materials negating the opponent's claim.", brief:"The movant need not negate the opponent's claim. It may point to the absence of evidence on an essential element. Celotex, 477 U.S. at 323.", dont:"Do not write that the defendant must disprove the claim.", pins:[["anderson","Anderson, 477 U.S. at 252"],["scott","Scott, 550 U.S. at 380"]] },
-  anderson: { name:"Anderson v. Liberty Lobby, Inc.", cite:"477 U.S. 242, 252 (1986)", court:"Federal", k:"Found · followed", mark:"The mere existence of a scintilla of evidence in support of the plaintiff's position will be insufficient; there must be evidence on which the jury could reasonably find for the plaintiff.", brief:"A scintilla is not a genuine dispute. The response must be evidence a jury could accept. Anderson, 477 U.S. at 252.", dont:"Do not write that any evidence defeats summary judgment.", pins:[["celotex","Celotex, 477 U.S. at 323"],["scott","Scott, 550 U.S. at 380"]] },
-  scott: { name:"Scott v. Harris", cite:"550 U.S. 372, 380 (2007)", court:"Federal", k:"Found · limits the record", mark:"When opposing parties tell two different stories, one of which is blatantly contradicted by the record, so that no reasonable jury could believe it, a court should not adopt that version of the facts for purposes of ruling on a motion for summary judgment.", brief:"Where the record blatantly contradicts the nonmovant, the court does not adopt that version. Scott, 550 U.S. at 380.", dont:"Do not cite Scott for the opening burden. That is Celotex.", pins:[["celotex","Celotex, 477 U.S. at 323"],["anderson","Anderson, 477 U.S. at 252"]] },
-  brill: { name:"Brill v. Guardian Life Ins. Co. of America", cite:"142 N.J. 520, 540 (1995)", court:"New Jersey", k:"Found · New Jersey", mark:"The same standard applies in New Jersey: the judge must consider whether the competent evidential materials presented, when viewed in the light most favorable to the non-moving party, are sufficient to permit a rational factfinder to resolve the alleged disputed issue in favor of the non-moving party.", brief:"Under Brill, the question is whether a rational factfinder could find for the nonmovant on the competent record. Brill, 142 N.J. at 540.", dont:"Do not cite Celotex as the New Jersey case. Brill adopted the standard.", pins:[["celotex","Celotex, the federal source"],["anderson","Anderson, 477 U.S. at 252"]] }
+  celotex: { name:"Celotex Corp. v. Catrett", cite:"477 U.S. 317 (1986)", pin:"323", court:"Federal", k:"Found · followed", mark:"There is no express or implied requirement in Rule 56 that the moving party support its motion with affidavits or other similar materials negating the opponent's claim.", brief:"The movant need not negate the opponent's claim. It may point to the absence of evidence on an essential element. Celotex, 477 U.S. at 323.", dont:"Do not write that the defendant must disprove the claim.", bad:"disprove", pins:[["anderson","Anderson, 477 U.S. at 252"],["scott","Scott, 550 U.S. at 380"]] },
+  anderson: { name:"Anderson v. Liberty Lobby, Inc.", cite:"477 U.S. 242 (1986)", pin:"252", court:"Federal", k:"Found · followed", mark:"The mere existence of a scintilla of evidence in support of the plaintiff's position will be insufficient; there must be evidence on which the jury could reasonably find for the plaintiff.", brief:"A scintilla is not a genuine dispute. The response must be evidence a jury could accept. Anderson, 477 U.S. at 252.", dont:"Do not write that any evidence defeats summary judgment.", bad:"any evidence", pins:[["celotex","Celotex, 477 U.S. at 323"],["scott","Scott, 550 U.S. at 380"]] },
+  scott: { name:"Scott v. Harris", cite:"550 U.S. 372 (2007)", pin:"380", court:"Federal", k:"Found · limits the record", mark:"When opposing parties tell two different stories, one of which is blatantly contradicted by the record, so that no reasonable jury could believe it, a court should not adopt that version of the facts for purposes of ruling on a motion for summary judgment.", brief:"Where the record blatantly contradicts the nonmovant, the court does not adopt that version. Scott, 550 U.S. at 380.", dont:"Do not cite Scott for the opening burden. That is Celotex.", bad:"must negate", pins:[["celotex","Celotex, 477 U.S. at 323"],["anderson","Anderson, 477 U.S. at 252"]] },
+  brill: { name:"Brill v. Guardian Life Ins. Co. of America", cite:"142 N.J. 520 (1995)", pin:"540", court:"New Jersey", k:"Found · New Jersey", mark:"The judge must consider whether the competent evidential materials presented, when viewed in the light most favorable to the non-moving party, are sufficient to permit a rational factfinder to resolve the alleged disputed issue in favor of the non-moving party.", brief:"Under Brill, the question is whether a rational factfinder could find for the nonmovant on the competent record. Brill, 142 N.J. at 540.", dont:"Do not cite Celotex as the New Jersey case. Brill adopted the standard.", bad:"celotex is the new jersey", pins:[["celotex","Celotex, the federal source"],["anderson","Anderson, 477 U.S. at 252"]] }
 };
-function show(id) {
+const trail = [];
+let current = "celotex";
+function show(id, label) {
   const c = cases[id];
   if (!c) {
     document.getElementById("sheet").innerHTML = "<article><h1>Not in this session.</h1><p class=\"op\">Try negate, scintilla, video, or New Jersey. This page will not invent a cite.</p></article>";
     return;
   }
-  document.getElementById("sheet").innerHTML = `<article><div class=\"kicker\">${c.k} · ${c.court}</div><h1>${c.name}</h1><p>${c.cite}</p><p class=\"op\"><mark>${c.mark}</mark></p></article><aside><div class=\"block ok\"><h2>For the brief</h2><p class=\"brief\" id=\"brief\">${c.brief}</p><button id=\"copy\" type=\"button\">Copy</button></div><div class=\"block\"><h2>Open next</h2>${c.pins.map(p=>`<button class=\"pin\" data-id=\"${p[0]}\">${p[1]}</button>`).join("")}</div><div class=\"block\"><h2>Do not write</h2><p>${c.dont}</p></div></aside>`;
+  current = id;
+  if (label) trail.unshift(label);
+  document.getElementById("sheet").innerHTML = `<article><div class=\"kicker\">${c.k}</div><h1>${c.name}</h1><p>${c.court} · ${c.cite} · pinpoint ${c.pin}</p><p class=\"op\"><mark>${c.mark}</mark></p></article><aside><div class=\"block ok\"><h2>For the brief</h2><p id=\"brief\">${c.brief}</p><button id=\"copy\" type=\"button\">Copy</button></div><div class=\"block\"><h2>Open next</h2>${c.pins.map(p=>`<button class=\"pin\" data-id=\"${p[0]}\">${p[1]}</button>`).join("")}</div><div class=\"block\"><h2>Do not write</h2><p>${c.dont}</p></div><div class=\"block\"><h2>Check a sentence</h2><textarea id=\"check\" placeholder=\"Paste a sentence from the draft\"></textarea><button id=\"run\" type=\"button\">Check</button><p id=\"verdict\"></p></div><div class=\"block trail\"><h2>This matter</h2>${trail.slice(0,4).map(t=>`<button type=\"button\" data-q=\"${t}\">${t}</button>`).join("") || "<p>No earlier question.</p>"}</div></aside>`;
   document.getElementById("copy").onclick = () => navigator.clipboard.writeText(c.brief);
   document.querySelectorAll(".pin").forEach(b => b.onclick = () => show(b.dataset.id));
+  document.getElementById("run").onclick = () => {
+    const s = document.getElementById("check").value.toLowerCase();
+    const verdict = document.getElementById("verdict");
+    if (!s.trim()) return;
+    if (s.includes(c.bad) || s.includes("must disprove") || s.includes("must negate")) verdict.textContent = "Not supported. Do not cite this page for that sentence.";
+    else if (c.mark.toLowerCase().split(" ").filter(w => w.length > 5 && s.includes(w)).length > 2) verdict.textContent = "Supported. Use " + c.name.split(" v. ")[0] + " at " + c.pin + ".";
+    else verdict.textContent = "Not found on this page. No cite added.";
+  };
+  document.querySelectorAll(".trail button").forEach(b => b.onclick = () => run(b.dataset.q));
 }
 const routes = [["scintilla","anderson"],["anderson","anderson"],["video","scott"],["dashcam","scott"],["scott","scott"],["blatantly","scott"],["new jersey","brill"],["brill","brill"],["negate","celotex"],["summary","celotex"],["celotex","celotex"],["burden","celotex"]];
-document.getElementById("f").onsubmit = e => {
-  e.preventDefault();
-  const s = document.getElementById("q").value.toLowerCase();
-  const hit = routes.find(r => s.includes(r[0]));
-  show(hit ? hit[1] : null);
-};
+function run(s) {
+  const hit = routes.find(r => s.toLowerCase().includes(r[0]));
+  show(hit ? hit[1] : null, s);
+}
+document.getElementById("f").onsubmit = e => { e.preventDefault(); run(document.getElementById("q").value); };
 document.getElementById("theme").onclick = () => { document.body.classList.toggle("dark"); document.getElementById("theme").textContent = document.body.classList.contains("dark") ? "Light" : "Dark"; };
 show("celotex");
 </script>
