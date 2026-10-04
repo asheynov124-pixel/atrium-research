@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Atrium — Legal Research</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,460;9..144,560&family=Outfit:wght@340;460;560&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #12110f;
+    --panel: #1b1916;
+    --line: rgba(232, 220, 198, 0.12);
+    --parchment: #f3ecdf;
+    --muted: #a39888;
+    --copper: #c4845a;
+    --forest: #8eae9b;
+    --red: #d4655a;
+    --amber: #d7a15a;
+    --ok: #7ea58a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--ink); color: var(--parchment);
+    font-family: Outfit, sans-serif; font-weight: 340;
+  }
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 28px; border-bottom: 1px solid var(--line);
+  }
+  .mark { font-family: Fraunces, serif; letter-spacing: -0.03em; font-size: 22px; }
+  .mark span { color: var(--copper); }
+  .chip { border: 1px solid var(--line); border-radius: 999px; padding: 6px 10px; color: var(--muted); font-size: 12px; }
+  main { display: grid; grid-template-columns: 280px 1fr 340px; min-height: calc(100vh - 64px); }
+  aside, .reader { border-right: 1px solid var(--line); padding: 22px; }
+  .reader { border-right: 0; border-left: 1px solid var(--line); }
+  h1 { font-family: Fraunces, serif; font-weight: 460; font-size: 34px; letter-spacing: -0.03em; margin: 8px 0 6px; }
+  p.lead { color: var(--muted); margin-top: 0; max-width: 46ch; }
+  .ask {
+    margin: 22px 0; display: flex; gap: 8px; background: var(--panel);
+    border: 1px solid var(--line); border-radius: 16px; padding: 8px;
+  }
+  input {
+    flex: 1; background: transparent; border: 0; color: var(--parchment);
+    font: inherit; font-size: 16px; padding: 10px 12px; outline: none;
+  }
+  button {
+    background: var(--copper); color: #1a120c; border: 0; border-radius: 12px;
+    padding: 10px 16px; font: inherit; font-weight: 560; cursor: pointer;
+  }
+  .answer { background: #171512; border: 1px solid var(--line); border-radius: 18px; padding: 18px 18px 8px; }
+  .pin { color: var(--copper); cursor: pointer; border-bottom: 1px solid rgba(196,132,90,.45); }
+  .flag { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; border-radius: 999px; padding: 3px 8px; margin-left: 6px; }
+  .neg { background: rgba(212,101,90,.15); color: #f0b2ab; }
+  .risk { background: rgba(215,161,90,.15); color: #efd0a4; }
+  .clean { background: rgba(126,165,138,.15); color: #c5ddcf; }
+  .case { padding: 12px 0; border-top: 1px solid var(--line); cursor: pointer; }
+  .case strong { display: block; font-weight: 560; }
+  .case em { color: var(--muted); font-style: normal; font-size: 13px; }
+  .reader h2 { font-family: Fraunces, serif; font-weight: 460; font-size: 22px; margin-bottom: 4px; }
+  .opinion { font-family: Fraunces, serif; font-size: 17px; line-height: 1.55; color: #efe6d6; }
+  mark { background: rgba(196,132,90,.28); color: inherit; border-radius: 4px; padding: 0 2px; }
+  .note { color: var(--muted); font-size: 12px; margin-top: 18px; }
+  .phone-toggle { background: transparent; color: var(--parchment); border: 1px solid var(--line); }
+  @media (max-width: 980px) {
+    main { grid-template-columns: 1fr; }
+    .reader, aside { border: 0; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="mark">Atr<span>ium</span></div>
+  <div style="display:flex;gap:8px;align-items:center">
+    <span class="chip">Public primary law · verified</span>
+    <span class="chip">Litigation</span>
+    <button class="phone-toggle" onclick="document.body.classList.toggle('phone')">Phone frame</button>
+  </div>
+</header>
+<main>
+  <aside>
+    <div class="chip">Matter · Hale v. Northline</div>
+    <div class="case" onclick="show('ford')"><strong>Ford Motor Co. v. Mont. Eighth Jud. Dist.</strong><em>141 S. Ct. 1017 (2021) · clean signal</em></div>
+    <div class="case" onclick="show('bristol')"><strong>Bristol-Myers Squibb Co. v. Superior Court</strong><em>137 S. Ct. 1773 (2017) · caution</em></div>
+    <div class="case" onclick="show('ww')"><strong>World-Wide Volkswagen v. Woodson</strong><em>444 U.S. 286 (1980) · at risk of narrow reading</em></div>
+    <p class="note">Signals are algorithmic treatment from public citing opinions. Not KeyCite or Shepard’s.</p>
+  </aside>
+  <section style="padding:28px 32px">
+    <h1>What controls specific jurisdiction here?</h1>
+    <p class="lead">A forum may hear a claim when the defendant purposefully availed itself of the forum and the claim arises out of or relates to that contact. Relatedness does not require a strict causal chain.</p>
+    <form class="ask" onsubmit="event.preventDefault(); answer()">
+      <input id="q" value="Can a state hear a products claim if the car was sold elsewhere but the company markets in the state?" />
+      <button>Ask</button>
+    </form>
+    <div class="answer" id="ans">
+      <p>Specific jurisdiction exists when the defendant purposefully avails itself of the forum and the suit <span class="pin" onclick="show('ford')">arises out of or relates to</span> those contacts. <span class="flag clean">clean · Ford</span></p>
+      <p>A strict causal requirement is not required: a resident plaintiff injured in the forum by a product the defendant systematically markets there can proceed even if that unit was sold elsewhere. <span class="pin" onclick="show('ford')">Ford, 141 S. Ct. at 1026–27</span></p>
+      <p>Unrelated claims by non-residents remain outside specific jurisdiction. <span class="pin" onclick="show('bristol')">Bristol-Myers, 137 S. Ct. at 1781</span> <span class="flag risk">caution · distinguish plaintiffs</span></p>
+      <p class="note">Every sentence is pinned to a public passage. Unsupported sentences are refused, not cited.</p>
+    </div>
+  </section>
+  <section class="reader" id="reader">
+    <div class="flag clean" id="rflag">clean signal</div>
+    <h2 id="rtitle">Ford Motor Co. v. Montana Eighth Judicial District Court</h2>
+    <p class="note" id="rcite">141 S. Ct. 1017 (2021) · public opinion text</p>
+    <p class="opinion" id="ropinion">The plaintiffs alleged injury in the forum from a Ford vehicle. Ford argued the particular cars were designed, made, and first sold elsewhere, so the claims did not arise from forum contacts. <mark>The Court held that the connection required is that the suit arise out of or relate to the defendant’s contacts with the forum. A strict causal relationship is not required.</mark> Ford had systematically served the market in Montana and Minnesota. That relatedness was enough.</p>
+    <button onclick="copyCite()">Copy Bluebook cite</button>
+    <p class="note" id="copied"></p>
+  </section>
+</main>
+<script>
+  const cases = {
+    ford: { title: "Ford Motor Co. v. Montana Eighth Judicial District Court", cite: "141 S. Ct. 1017 (2021)", flag: "clean signal", cls: "clean", text: "The plaintiffs alleged injury in the forum from a Ford vehicle. Ford argued the particular cars were designed, made, and first sold elsewhere, so the claims did not arise from forum contacts. The Court held that the connection required is that the suit arise out of or relate to the defendant’s contacts with the forum. A strict causal relationship is not required. Ford had systematically served the market in Montana and Minnesota. That relatedness was enough." },
+    bristol: { title: "Bristol-Myers Squibb Co. v. Superior Court", cite: "137 S. Ct. 1773 (2017)", flag: "caution · distinguish", cls: "risk", text: "Nonresident plaintiffs sued in California over Plavix, but were not prescribed the drug in California and were not injured there. The Court held there was no adequate link between the forum and the specific claims. The mere fact that other plaintiffs were prescribed and injured in California did not create specific jurisdiction over the nonresidents’ claims." },
+    ww: { title: "World-Wide Volkswagen Corp. v. Woodson", cite: "444 U.S. 286 (1980)", flag: "at risk of narrow reading", cls: "risk", text: "A New York retailer and distributor were sued in Oklahoma over an accident there. The Court held foreseeability that a car would travel to Oklahoma was not enough. The defendant must purposefully avail itself of the privilege of conducting activities in the forum." }
+  };
+  function show(id) {
+    const c = cases[id];
+    document.getElementById("rtitle").textContent = c.title;
+    document.getElementById("rcite").textContent = c.cite + " · public opinion text";
+    document.getElementById("ropinion").textContent = c.text;
+    const f = document.getElementById("rflag");
+    f.textContent = c.flag; f.className = "flag " + c.cls;
+  }
+  function copyCite() {
+    const t = document.getElementById("rtitle").textContent + ", " + document.getElementById("rcite").textContent.split(" ·")[0] + ".";
+    navigator.clipboard && navigator.clipboard.writeText(t);
+    document.getElementById("copied").textContent = "Copied · " + t;
+  }
+  function answer() {
+    document.getElementById("ans").scrollIntoView({behavior:"smooth"});
+  }
+</script>
+</body>
+</html>
