@@ -1,0 +1,9 @@
+{
+  "name": "Atrium",
+  "short_name": "Atrium",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f6f3ec",
+  "theme_color": "#8c2f2c",
+  "icons": []
+}
