@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Atrium — design rooms</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Libre+Baskerville:ital,wght@0,400;1,400&family=Outfit:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root { --bg:#efe8dc; --ink:#1c1915; --muted:#6f675e; --line:#d9d0c3; --card:#f7f3ec; --accent:#6e2f2a; }
+  body.dark { --bg:#0e0d0b; --ink:#f3ecdf; --muted:#a3988c; --line:rgba(243,236,223,.14); --card:#1a1714; --accent:#c4a574; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:Outfit,sans-serif; transition:background .2s,color .2s; }
+  header { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:16px 20px; border-bottom:1px solid var(--line); position:sticky; top:0; background:var(--bg); }
+  .rooms { display:flex; gap:8px; flex-wrap:wrap; }
+  button { border:1px solid var(--line); background:transparent; color:var(--ink); border-radius:999px; padding:8px 12px; font:14px Outfit,sans-serif; cursor:pointer; }
+  button.on { background:var(--ink); color:var(--bg); border-color:var(--ink); }
+  main { max-width:980px; margin:0 auto; padding:28px 20px 64px; }
+  .kicker { letter-spacing:.14em; text-transform:uppercase; font-size:11px; color:var(--accent); }
+  h1 { font-family:Fraunces,serif; font-weight:500; font-size:clamp(32px,5vw,52px); line-height:1.05; letter-spacing:-.03em; margin:8px 0 12px; }
+  .search { display:flex; gap:8px; border-bottom:1px solid var(--ink); margin:18px 0 22px; }
+  .search input { flex:1; border:0; background:transparent; color:var(--ink); font:18px Outfit,sans-serif; padding:10px 0; outline:none; }
+  .stage { background:var(--card); border:1px solid var(--line); padding:22px; }
+  q { display:block; font-family:Libre Baskerville,serif; font-size:clamp(18px,2.4vw,26px); line-height:1.45; margin:0 0 12px; }
+  .meta { color:var(--muted); font-size:14px; }
+  .found { display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; }
+  .found span { border:1px solid var(--line); border-radius:999px; padding:6px 10px; font-size:13px; }
+  p.note { color:var(--muted); max-width:62ch; }
+  body.editorial h1, body.editorial q { font-family:Fraunces,serif; }
+  body.instrument .stage { font-variant-numeric:tabular-nums; }
+  body.precision { font-family:Outfit,sans-serif; }
+  body.precision q { font-family:Fraunces,serif; }
+</style>
+</head>
+<body>
+<header>
+  <strong>See the room</strong>
+  <div class="rooms" id="rooms">
+    <button type="button" data-room="chambers" class="on">Chambers</button>
+    <button type="button" data-room="instrument">Instrument</button>
+    <button type="button" data-room="editorial">Editorial</button>
+    <button type="button" data-room="precision">Precision</button>
+    <button type="button" id="mode">Dark</button>
+  </div>
+</header>
+<main>
+  <div class="kicker" id="kicker">Chambers · paper, serif, the opinion is the find</div>
+  <h1 id="title">No duty to disprove the claim.</h1>
+  <div class="search"><input value="summary judgment — must the defendant negate the claim?" readonly /><button type="button">Search</button></div>
+  <div class="stage">
+    <q id="quote">There is no express or implied requirement in Rule 56 that the moving party support its motion with affidavits or other similar materials negating the opponent's claim.</q>
+    <div class="meta">Celotex Corp. v. Catrett, 477 U.S. 317, 323 (1986) · Followed</div>
+    <div class="found"><span>Anderson · the jury question</span><span>Scott · when the record contradicts</span><span>Verify a sentence</span></div>
+  </div>
+  <p class="note" id="note">Search finds the passage. The opinion is the stage. Related points stay one tap away. Light or dark is a mode, not a different product.</p>
+</main>
+<script>
+const copy = {
+  chambers: ["Chambers · paper, serif, the opinion is the find", "No duty to disprove the claim.", "The case is set like a reporter page. Power is in the find, not the chrome."],
+  instrument: ["Instrument · dark desk, scan the point, open the passage", "Movant may point to a missing element.", "Dense enough to feel like it can reach anything. Still one passage on stage."],
+  editorial: ["Editorial · one holding, large type, next case is a turn", "No duty to disprove the claim.", "Confidence first. Research is the next authority, not a pile of panels."],
+  precision: ["Precision · simple software, serif only for the words of the court", "No duty to disprove the claim.", "Looks like a tool that can do more than it shows. Nothing extra on the first screen."]
+};
+document.getElementById("rooms").onclick = (e) => {
+  const b = e.target.closest("button");
+  if (!b) return;
+  if (b.id === "mode") {
+    document.body.classList.toggle("dark");
+    b.textContent = document.body.classList.contains("dark") ? "Light" : "Dark";
+    return;
+  }
+  document.querySelectorAll("#rooms button").forEach(x => x.classList.remove("on"));
+  b.classList.add("on");
+  document.body.className = (document.body.classList.contains("dark") ? "dark " : "") + b.dataset.room;
+  const c = copy[b.dataset.room];
+  document.getElementById("kicker").textContent = c[0];
+  document.getElementById("title").textContent = c[1];
+  document.getElementById("note").textContent = c[2];
+};
+</script>
+</body>
+</html>
